@@ -69,8 +69,8 @@ const sessionOptions = {
   },
 };
 
-store.on("error" , ()=>{
-  console.log("error in Mongoose Session store",err);
+store.on("error" , (err)=>{
+  console.log("error in Mongoose Session store", err);
 })
 
 // root route

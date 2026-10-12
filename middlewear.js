@@ -1,4 +1,3 @@
-const { request } = require("express");
 const wrapAsync = require("./utils/wrapAsync");
 const Listing = require("./models/listing");
 const Review = require("./models/review");
