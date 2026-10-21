@@ -1,50 +1,42 @@
-// const mongoose = require("mongoose");
-// const initData = require("./data.js");
-// const Listing = require("../models/listing.js");
+require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-
-// main()
-//   .then(() => {
-//     console.log("connected to DB");
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-
-// async function main() {
-//   await mongoose.connect(MONGO_URL);
-// }
-
-// const initDB = async () => {
-//   await Listing.deleteMany({});
-//   await Listing.insertMany(initData.data);
-//   console.log("data was initialized");
-// };
-
-// initDB();
+const dns = require("dns");
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const mongoose = require("mongoose");
-const initData = require("./data.js"); // contains { data: [...] }
+const initData = require("./data.js");
 const Listing = require("../models/listing.js");
+const User = require("../models/user.js");
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl = process.env.ATLASDB_URL;
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
-  console.log("connected to DB");
+  await mongoose.connect(dbUrl);
+  console.log("Connected to Atlas DB");
 }
 
 const initDB = async () => {
+  // Find naveen11's actual _id from Atlas
+  const owner = await User.findOne({ username: "naveen11" });
+  if (!owner) {
+    console.error('User "naveen11" not found in Atlas. Please sign up on the website first.');
+    mongoose.connection.close();
+    return;
+  }
+
+  console.log(`Found owner: ${owner.username} (${owner._id})`);
+
   await Listing.deleteMany({});
-  //adding onwer
-  initData.data=initData.data.map((obj)=>({...obj, owner:'6aa50c4a339fef43a26cced3'}));
-  
-  await Listing.insertMany(initData.data);
-  console.log("data was initialized");
+  const listings = initData.data.map((obj) => ({ ...obj, owner: owner._id }));
+  await Listing.insertMany(listings);
+  console.log(`${listings.length} listings inserted, all owned by naveen11.`);
+
   mongoose.connection.close();
 };
 
 main()
   .then(() => initDB())
-  .catch((err) => console.error(err));
+  .catch((err) => {
+    console.error(err);
+    mongoose.connection.close();
+  });
