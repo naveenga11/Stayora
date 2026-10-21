@@ -67,29 +67,7 @@
 </div>
 
 <!-- Main Content -->
-<div class="container">
-
-  <!-- Inline search bar (below filters, above results) -->
-  <div class="mt-4 mb-3">
-    <form action="/listings" method="GET">
-      <div class="index-search-bar">
-        <i class="fa-solid fa-magnifying-glass search-icon-inner"></i>
-        <input
-          type="search"
-          name="q"
-          value="<%= searchQuery %>"
-          placeholder="Search by title, location or country…"
-          aria-label="Search listings"
-          autocomplete="off">
-        <% if (activeCategory) { %>
-          <input type="hidden" name="category" value="<%= activeCategory %>">
-        <% } %>
-        <button type="submit" class="btn-search-main" aria-label="Search">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-      </div>
-    </form>
-  </div>
+<div class="container mt-3">
 
   <!-- Search result header -->
   <% if (searchQuery && searchQuery.trim()) { %>
