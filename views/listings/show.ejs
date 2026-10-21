@@ -2,19 +2,43 @@
 
 <div class="show-page mt-3">
 
-  <!-- Image -->
+  <!-- Back link -->
+  <a href="/listings" class="back-link">
+    <i class="fa-solid fa-arrow-left"></i> Back to listings
+  </a>
+
+  <!-- Hero image -->
   <img src="<%= listing.image.url %>" alt="<%= listing.title %>" class="show-img">
 
-  <!-- Title & meta -->
+  <!-- Title -->
   <h1 class="show-title"><%= listing.title %></h1>
+
+  <!-- Location -->
   <p class="show-location">
-    <i class="fa-solid fa-location-dot me-1" style="color:var(--brand);"></i>
+    <i class="fa-solid fa-location-dot"></i>
     <%= listing.location %>, <%= listing.country %>
   </p>
 
+  <!-- Meta badges -->
+  <div class="show-meta-badges">
+    <span class="show-meta-badge">
+      <i class="fa-solid fa-map-pin"></i> <%= listing.location %>
+    </span>
+    <span class="show-meta-badge">
+      <i class="fa-solid fa-flag"></i> <%= listing.country %>
+    </span>
+    <% if(listing.reviews && listing.reviews.length > 0) { %>
+    <span class="show-meta-badge">
+      <i class="fa-solid fa-star" style="color:var(--accent);"></i>
+      <%= listing.reviews.length %> review<%= listing.reviews.length !== 1 ? 's' : '' %>
+    </span>
+    <% } %>
+  </div>
+
+  <!-- Owner badge -->
   <div class="show-owner-badge">
     <i class="fa-solid fa-circle-user"></i>
-    Hosted by <strong class="ms-1"><%= listing.owner.username %></strong>
+    Hosted by <strong><%= listing.owner.username %></strong>
   </div>
 
   <hr class="divider">
@@ -22,21 +46,26 @@
   <!-- Description -->
   <p class="show-description"><%= listing.description %></p>
 
-  <!-- Price -->
+  <!-- Price card -->
   <div class="show-price-card">
-    <span class="price-amount">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
-    <span class="price-label">/ night</span>
+    <div class="price-icon">
+      <i class="fa-solid fa-indian-rupee-sign"></i>
+    </div>
+    <div class="price-details">
+      <span class="price-amount">&#8377;<%= listing.price.toLocaleString("en-IN") %></span>
+      <span class="price-label">per night · taxes may apply</span>
+    </div>
   </div>
 
   <!-- Edit / Delete (owner only) -->
   <% if(curUser && curUser._id.equals(listing.owner._id)) { %>
   <div class="show-actions">
     <a href="/listings/<%= listing._id %>/edit" class="btn-edit">
-      <i class="fa-solid fa-pen me-1"></i>Edit
+      <i class="fa-solid fa-pen"></i> Edit Listing
     </a>
     <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" style="margin:0;">
       <button type="submit" class="btn-delete">
-        <i class="fa-solid fa-trash me-1"></i>Delete
+        <i class="fa-solid fa-trash"></i> Delete
       </button>
     </form>
   </div>
@@ -44,58 +73,83 @@
 
   <hr class="divider">
 
-  <!-- Leave a review -->
+  <!-- Reviews Section -->
   <div class="review-section">
+
+    <!-- Leave a Review form -->
     <% if(curUser) { %>
-    <h4>Leave a Review</h4>
+    <div class="review-form-card">
+      <h4 class="review-form-title">
+        <i class="fa-solid fa-star" style="color:var(--accent);"></i> Leave a Review
+      </h4>
 
-    <form action="/listings/<%= listing.id %>/reviews" method="post" class="needs-validation mb-4" novalidate>
+      <form action="/listings/<%= listing.id %>/reviews" method="post" class="needs-validation" novalidate>
 
-      <!-- Star rating -->
-      <div class="mb-3">
-        <label class="form-label fw-semibold">Your Rating</label>
-        <div class="star-rating-widget">
-          <div class="stars-row" id="starsRow">
-            <span class="star" data-value="1">&#9733;</span>
-            <span class="star" data-value="2">&#9733;</span>
-            <span class="star" data-value="3">&#9733;</span>
-            <span class="star" data-value="4">&#9733;</span>
-            <span class="star" data-value="5">&#9733;</span>
+        <!-- Star rating -->
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:0.82rem;color:var(--text-secondary);">Rating</label>
+          <div class="star-rating-widget">
+            <div class="stars-row" id="starsRow">
+              <span class="star" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star" data-value="4">&#9733;</span>
+              <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <span class="rating-label" id="ratingLabel">Select a rating</span>
+            <input type="hidden" name="review[rating]" id="ratingInput" value="" required />
           </div>
-          <span class="rating-label" id="ratingLabel">Select a rating</span>
-          <input type="hidden" name="review[rating]" id="ratingInput" value="" required />
         </div>
-      </div>
 
-      <!-- Comment -->
-      <div class="mb-3">
-        <label for="comment" class="form-label fw-semibold">Comment</label>
-        <textarea name="review[comment]" required id="comment" rows="4" class="form-control" placeholder="Share your experience..."></textarea>
-        <div class="invalid-feedback">Please add a comment.</div>
-      </div>
+        <!-- Comment -->
+        <div class="mb-3">
+          <label for="comment" class="form-label fw-semibold" style="font-size:0.82rem;color:var(--text-secondary);">Comment</label>
+          <textarea
+            name="review[comment]"
+            required
+            id="comment"
+            rows="4"
+            class="review-textarea"
+            placeholder="Share your experience…"></textarea>
+          <div class="invalid-feedback">Please add a comment.</div>
+        </div>
 
-      <button type="submit" class="btn btn-dark px-4" style="border-radius:2rem;">Submit Review</button>
-    </form>
+        <button type="submit" class="btn-submit-review">
+          <i class="fa-solid fa-paper-plane"></i> Submit Review
+        </button>
+      </form>
+    </div>
     <% } else { %>
-    <p class="text-muted" style="font-size:0.9rem;">
-      <a href="/login" style="color:var(--brand);font-weight:600;">Log in</a> to leave a review.
-    </p>
+    <div class="review-form-card" style="text-align:center;padding:1.5rem;">
+      <i class="fa-solid fa-lock" style="font-size:1.75rem;color:var(--text-muted);margin-bottom:0.75rem;display:block;"></i>
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin:0;">
+        <a href="/login" style="color:var(--brand);font-weight:700;">Log in</a> to leave a review.
+      </p>
+    </div>
     <% } %>
 
     <!-- All reviews -->
     <% if(listing.reviews.length > 0) { %>
-    <h4 class="mt-4">Guest Reviews <span style="color:var(--text-muted);font-weight:400;font-size:0.9rem;">(<%= listing.reviews.length %>)</span></h4>
-    <div class="row g-3 mt-1">
+    <h4 class="review-section-title mt-4">
+      <i class="fa-solid fa-comments" style="color:var(--brand);"></i>
+      Guest Reviews
+      <span class="review-count-badge"><%= listing.reviews.length %></span>
+    </h4>
+    <div class="row g-3">
       <% for(let review of listing.reviews) { %>
       <div class="col-md-6">
         <div class="review-card">
-          <div class="reviewer">@<%= review.author.username %></div>
+          <div class="reviewer-row">
+            <div class="reviewer-avatar"><%= review.author.username.charAt(0) %></div>
+            <span class="reviewer">@<%= review.author.username %></span>
+          </div>
+          <!-- star display -->
           <p class="starability-result review-comment" data-rating="<%= review.rating %>"></p>
           <p class="review-comment"><%= review.comment %></p>
           <% if(curUser && review.author && curUser._id.equals(review.author._id)) { %>
-          <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="post">
-            <button class="btn btn-sm btn-outline-danger" style="border-radius:2rem;font-size:0.75rem;">
-              <i class="fa-solid fa-trash me-1"></i>Delete
+          <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="post" style="margin-top:0.5rem;">
+            <button type="submit" class="btn-delete" style="padding:0.3rem 0.9rem;font-size:0.75rem;">
+              <i class="fa-solid fa-trash"></i> Delete
             </button>
           </form>
           <% } %>
@@ -104,31 +158,16 @@
       <% } %>
     </div>
     <% } %>
+
   </div>
-
 </div>
-
-<style>
-  .star-rating-widget { display: flex; align-items: center; gap: 0.75rem; }
-  .stars-row { display: flex; gap: 4px; }
-  .star {
-    font-size: 2rem;
-    color: #d1d5db;
-    cursor: pointer;
-    transition: color 0.15s, transform 0.15s;
-    user-select: none;
-  }
-  .star.hovered, .star.selected { color: #f59e0b; }
-  .star:hover { transform: scale(1.2); }
-  .rating-label { font-size: 0.85rem; color: #6b7280; font-style: italic; min-width: 90px; }
-</style>
 
 <script>
   (function () {
-    const labels = ["Terrible", "Not good", "Average", "Very good", "Amazing"];
+    const labels = ["Terrible", "Not good", "Average", "Very good", "Amazing!"];
     const stars = document.querySelectorAll("#starsRow .star");
     const input = document.getElementById("ratingInput");
-    const lbl = document.getElementById("ratingLabel");
+    const lbl   = document.getElementById("ratingLabel");
     let selected = 0;
 
     function paint(upTo, cls) {

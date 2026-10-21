@@ -12,24 +12,35 @@
       </div>
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+      style="color:rgba(255,255,255,0.7);">
+      <i class="fa-solid fa-bars"></i>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
 
-      <!-- Search -->
-      <form class="d-flex mx-auto my-2 my-md-0 search-form" role="search">
+      <!-- Navbar Search — functional, posts to /listings?q=... -->
+      <form class="d-flex mx-auto my-2 my-md-0 search-form" role="search"
+            action="/listings" method="GET">
         <div class="search-wrapper">
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
-          <input class="form-control search-input" type="search" placeholder="Search destinations..." aria-label="Search">
-          <button class="btn btn-search" type="submit">Search</button>
+          <input
+            class="form-control search-input"
+            type="search"
+            name="q"
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+            placeholder="Search destinations, cities, countries…"
+            aria-label="Search listings"
+            autocomplete="off">
+          <button class="btn btn-search" type="submit" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass me-1"></i>Search
+          </button>
         </div>
       </form>
 
       <!-- Nav links -->
-      <div class="navbar-nav d-flex flex-row flex-md-row align-items-center gap-2 ms-md-3">
+      <div class="navbar-nav d-flex flex-row align-items-center gap-2 ms-md-3">
         <a class="nav-link nav-pill" href="/listings">Explore</a>
 
         <% if(!curUser) { %>
@@ -40,7 +51,7 @@
             <i class="fa-solid fa-plus me-1"></i>Add Listing
           </a>
           <div class="nav-user-pill">
-            <i class="fa-solid fa-circle-user me-1"></i>
+            <i class="fa-solid fa-circle-user"></i>
             <span><%= curUser.username %></span>
           </div>
           <a class="btn btn-outline-custom" href="/logout">Logout</a>

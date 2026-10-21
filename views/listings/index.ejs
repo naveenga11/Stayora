@@ -1,87 +1,160 @@
 <% layout("/layouts/boilerplate") %>
 
-<!-- Filters -->
-<div id="filters">
-  <div class="filter">
-    <i class="fa-solid fa-fire"></i>
-    <p>Trending</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-bed"></i>
-    <p>Rooms</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-mountain-sun"></i>
-    <p>Mountain</p>
-  </div>
-  <div class="filter">
-    <i class="fa-brands fa-fort-awesome"></i>
-    <p>Castles</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-water-ladder"></i>
-    <p>Pools</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-campground"></i>
-    <p>Camping</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-snowflake"></i>
-    <p>Snow</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-tractor"></i>
-    <p>Farms</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-city"></i>
-    <p>City</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-umbrella-beach"></i>
-    <p>Beach</p>
-  </div>
-  <div class="filter">
-    <i class="fa-solid fa-mug-hot"></i>
-    <p>Café</p>
-  </div>
+<!-- Filter Bar (sticky below navbar) -->
+<div class="filters-section">
+  <div class="container">
+    <div id="filters">
 
-  <div class="tax-toggle ms-auto">
-    <div class="form-check form-switch mb-0">
-      <input class="form-check-input" type="checkbox" role="switch" id="taxSwitch">
-      <label class="form-check-label" for="taxSwitch">Show taxes</label>
+      <a href="/listings" class="filter <%= !activeCategory ? 'active' : '' %>" title="All listings">
+        <i class="fa-solid fa-border-all"></i>
+        <p>All</p>
+      </a>
+      <a href="/listings?category=Trending<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Trending' ? 'active' : '' %>" title="Trending">
+        <i class="fa-solid fa-fire"></i>
+        <p>Trending</p>
+      </a>
+      <a href="/listings?category=Rooms<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Rooms' ? 'active' : '' %>" title="Rooms">
+        <i class="fa-solid fa-bed"></i>
+        <p>Rooms</p>
+      </a>
+      <a href="/listings?category=Mountain<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Mountain' ? 'active' : '' %>" title="Mountain">
+        <i class="fa-solid fa-mountain-sun"></i>
+        <p>Mountain</p>
+      </a>
+      <a href="/listings?category=Castles<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Castles' ? 'active' : '' %>" title="Castles">
+        <i class="fa-brands fa-fort-awesome"></i>
+        <p>Castles</p>
+      </a>
+      <a href="/listings?category=Pools<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Pools' ? 'active' : '' %>" title="Pools">
+        <i class="fa-solid fa-water-ladder"></i>
+        <p>Pools</p>
+      </a>
+      <a href="/listings?category=Camping<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Camping' ? 'active' : '' %>" title="Camping">
+        <i class="fa-solid fa-campground"></i>
+        <p>Camping</p>
+      </a>
+      <a href="/listings?category=Snow<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Snow' ? 'active' : '' %>" title="Snow">
+        <i class="fa-solid fa-snowflake"></i>
+        <p>Snow</p>
+      </a>
+      <a href="/listings?category=Farms<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Farms' ? 'active' : '' %>" title="Farm">
+        <i class="fa-solid fa-tractor"></i>
+        <p>Farm</p>
+      </a>
+      <a href="/listings?category=City<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'City' ? 'active' : '' %>" title="City">
+        <i class="fa-solid fa-city"></i>
+        <p>City</p>
+      </a>
+      <a href="/listings?category=Beach<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Beach' ? 'active' : '' %>" title="Beach">
+        <i class="fa-solid fa-umbrella-beach"></i>
+        <p>Beach</p>
+      </a>
+      <a href="/listings?category=Cafe<%= searchQuery ? '&q=' + encodeURIComponent(searchQuery) : '' %>" class="filter <%= activeCategory === 'Cafe' ? 'active' : '' %>" title="Café">
+        <i class="fa-solid fa-mug-hot"></i>
+        <p>Café</p>
+      </a>
+
+      <!-- Tax toggle -->
+      <div class="tax-toggle ms-auto">
+        <div class="form-check form-switch mb-0 d-flex align-items-center gap-2">
+          <input class="form-check-input" type="checkbox" role="switch" id="taxSwitch" style="cursor:pointer;">
+          <label class="form-check-label" for="taxSwitch" style="cursor:pointer;">Show taxes</label>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- Listings Grid -->
-<div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-3 mt-1">
-  <% for(let listing of allListings) { %>
-  <div class="col">
-    <a href="/listings/<%= listing._id %>" class="listing-link">
-      <div class="listing-card">
-        <div class="card-img-wrap">
-          <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
-          <div class="card-img-overlay-custom">
-            <span class="overlay-label">View details</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-title"><%= listing.title %></div>
-          <div class="card-location">
-            <i class="fa-solid fa-location-dot me-1" style="color:var(--brand);font-size:0.75rem;"></i>
-            <%= listing.location %>, <%= listing.country %>
-          </div>
-          <div class="card-price">
-            <strong>&#8377;<%= listing.price.toLocaleString("en-IN") %></strong> / night
-            <span class="tax-info" style="display:none;color:var(--text-muted);font-size:0.78rem;"> &nbsp;+18% GST</span>
-          </div>
-        </div>
+<!-- Main Content -->
+<div class="container">
+
+  <!-- Inline search bar (below filters, above results) -->
+  <div class="mt-4 mb-3">
+    <form action="/listings" method="GET">
+      <div class="index-search-bar">
+        <i class="fa-solid fa-magnifying-glass search-icon-inner"></i>
+        <input
+          type="search"
+          name="q"
+          value="<%= searchQuery %>"
+          placeholder="Search by title, location or country…"
+          aria-label="Search listings"
+          autocomplete="off">
+        <% if (activeCategory) { %>
+          <input type="hidden" name="category" value="<%= activeCategory %>">
+        <% } %>
+        <button type="submit" class="btn-search-main" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
       </div>
+    </form>
+  </div>
+
+  <!-- Search result header -->
+  <% if (searchQuery && searchQuery.trim()) { %>
+  <div class="search-result-header">
+    <p class="result-text mb-0">
+      <strong><%= allListings.length %></strong>
+      result<%= allListings.length !== 1 ? 's' : '' %> for
+      "<strong><%= searchQuery %></strong>"
+    </p>
+    <a href="/listings<%= activeCategory ? '?category=' + activeCategory : '' %>" class="btn-clear-search">
+      <i class="fa-solid fa-xmark"></i> Clear search
     </a>
   </div>
   <% } %>
+
+  <!-- Listings Grid -->
+  <% if (allListings.length === 0) { %>
+  <div class="empty-state">
+    <div class="empty-icon"><i class="fa-solid fa-compass"></i></div>
+    <h4>No listings found</h4>
+    <p>
+      <% if (searchQuery) { %>
+        We couldn't find anything for "<strong><%= searchQuery %></strong>".
+        Try a different search term or <a href="/listings" style="color:var(--brand);font-weight:600;">browse all listings</a>.
+      <% } else { %>
+        There are no listings yet. <a href="/listings/new" style="color:var(--brand);font-weight:600;">Add one!</a>
+      <% } %>
+    </p>
+  </div>
+  <% } else { %>
+  <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-3 cards-section">
+    <% for(let listing of allListings) { %>
+    <div class="col">
+      <a href="/listings/<%= listing._id %>" class="listing-link">
+        <div class="listing-card">
+          <div class="card-img-wrap">
+            <img
+              src="<%= listing.image.url %>"
+              alt="<%= listing.title %>"
+              loading="lazy">
+            <div class="card-img-overlay-custom"></div>
+            <!-- wishlist heart -->
+            <button class="card-wishlist" aria-label="Save to wishlist" onclick="event.preventDefault()">
+              <i class="fa-regular fa-heart"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="card-title"><%= listing.title %></div>
+            <div class="card-location">
+              <i class="fa-solid fa-location-dot"></i>
+              <%= listing.location %>, <%= listing.country %>
+            </div>
+            <div class="card-price">
+              <strong>&#8377;<%= listing.price.toLocaleString("en-IN") %></strong>
+              <span> / night</span>
+              <span class="tax-info" style="display:none;color:var(--text-muted);font-size:0.75rem;"> &nbsp;+18% GST</span>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+
 </div>
 
 <script>
@@ -92,11 +165,14 @@
     }, this);
   });
 
-  // Filter active state
-  document.querySelectorAll(".filter").forEach(function (f) {
-    f.addEventListener("click", function () {
-      document.querySelectorAll(".filter").forEach(function (x) { x.classList.remove("active"); });
-      f.classList.add("active");
+  // Wishlist heart toggle (purely visual)
+  document.querySelectorAll(".card-wishlist").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      const icon = btn.querySelector("i");
+      icon.classList.toggle("fa-regular");
+      icon.classList.toggle("fa-solid");
+      btn.style.color = icon.classList.contains("fa-solid") ? "var(--brand)" : "";
     });
   });
 </script>

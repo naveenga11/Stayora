@@ -1,8 +1,28 @@
 const Listing = require("../models/listing");
 
 module.exports.index = async (req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
+    const { q = "", category = "" } = req.query;
+
+    // Build MongoDB filter
+    const filter = {};
+
+    if (q && q.trim()) {
+        const regex = new RegExp(q.trim(), "i");
+        filter.$or = [
+            { title:    regex },
+            { location: regex },
+            { country:  regex },
+            { description: regex },
+        ];
+    }
+
+    const allListings = await Listing.find(filter);
+
+    res.render("listings/index.ejs", {
+        allListings,
+        searchQuery:    q,
+        activeCategory: category,
+    });
 };
 
 module.exports.RenderNewForm = (req, res) => {
@@ -14,9 +34,7 @@ module.exports.showListing = async (req, res) => {
     const listing = await Listing.findById(id)
       .populate({
         path: "reviews",
-        populate: {
-          path: "author",
-        },
+        populate: { path: "author" },
       })
       .populate("owner");
     if (!listing) {
@@ -30,7 +48,6 @@ module.exports.createListing = async (req, res, next) => {
     const listingData = req.body.listing;
     const newListing = new Listing(listingData);
     newListing.owner = req.user._id;
-    // if a file was uploaded, use Cloudinary url/filename; otherwise keep model default
     if (req.file) {
         newListing.image = { url: req.file.path, filename: req.file.filename };
     }
@@ -52,7 +69,7 @@ module.exports.renderEdiForm = async (req, res) => {
 
 module.exports.UpdateListing = async (req, res) => {
     let { id } = req.params;
-    const listingData = req.body.listing;                          // fix: was undefined
+    const listingData = req.body.listing;
     let listing = await Listing.findByIdAndUpdate(id, { ...listingData }, { new: true });
     if (req.file) {
         listing.image = { url: req.file.path, filename: req.file.filename };
